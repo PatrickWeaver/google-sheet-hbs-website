@@ -1,0 +1,21 @@
+<div id="content">
+  <h2>
+    {{ data.currentWorksheet }}
+  </h2>
+  
+  {{#each data.rows }}
+    <div class="plant">
+      <ul id="facts">
+        <li><strong>Common Name:</strong> {{ this.commonname }}</li>
+        <li><strong>Scientific Name:</strong> {{ this.scientificname }}</li>
+        <li><strong>Region:</strong> {{ this.region }}</li>
+      </ul>
+  
+      <div id="image">
+        <img src="{{ this.image }}" />
+      </div>
+    </div>
+
+    <hr>
+  {{/each}}
+</div>
