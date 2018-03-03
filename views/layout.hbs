@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link id="favicon" rel="icon" href="{{ favicon }}" type="image/x-icon">
+    <link rel="stylesheet" href="style.css" type="text/css">
+  </head>
+  <body>
+    <h1 id="header">
+      {{ title }}
+    </h1>
+    
+    <ul id="menu">
+      {{#each data.worksheets }}
+        <li>
+          <h3>
+            {{#if this.current }}
+              {{ this.title }}
+            {{else}}
+              <a href="{{ this.title }}">
+                {{ this.title }}
+              </a>
+            {{/if}}
+          </h3>
+        </li>
+      {{/each}}
+    </ul>
+    
+    {{{ body }}}
+  </body>
+</html>
