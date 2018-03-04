@@ -32,12 +32,12 @@ body {
 
 #facts {
   flex: 1 1 auto;
-  width: 300px;
+  width: 100px;
   max-width: 300px;
   padding-right: 10px;
 }
 
-#image {
+.image {
   flex: 1 1 auto;
   width: 50%;
   max-width: 300px;
@@ -46,7 +46,7 @@ body {
   height: auto;
 }
 
-#image img {
+.image img {
   width: 100%;
   height: auto;
 }

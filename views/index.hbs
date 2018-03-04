@@ -6,16 +6,29 @@
   {{#each data.rows }}
     <div class="plant">
       <ul id="facts">
-        <li><strong>Common Name:</strong> {{ this.commonname }}</li>
-        <li><strong>Scientific Name:</strong> {{ this.scientificname }}</li>
-        <li><strong>Region:</strong> {{ this.region }}</li>
+        {{#each this}}
+          {{#unless this.image}}
+            <li><strong>{{@key}}:</strong> {{this}}</li>
+          {{/unless}}
+        {{/each}}
       </ul>
-  
-      <div id="image">
-        <img src="{{ this.image }}" />
+      <div class="image">
+        <img src="{{this.Image.url}}"  />
       </div>
     </div>
+  
+
 
     <hr>
   {{/each}}
 </div>
+
+
+{{!--
+
+{{#each myObject}}
+    Key: {{@key}} Value = {{this}}
+{{/each}}
+
+
+--}}
