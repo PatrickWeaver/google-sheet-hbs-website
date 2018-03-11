@@ -5,16 +5,23 @@
   
   {{#each data.rows }}
     <div class="plant">
-      <ul id="facts">
+      <ul class="facts">
         {{#each this}}
           {{#unless this.image}}
             <li><strong>{{@key}}:</strong> {{this}}</li>
           {{/unless}}
         {{/each}}
       </ul>
-      <div class="image">
-        <img src="{{this.Image.url}}"  />
+      <div class="images">
+        {{#each this}}
+          {{#if this.image}}
+            <div class="image">
+              <img src="{{this.url}}"  />
+            </div>
+          {{/if}}
+        {{/each}}
       </div>
+
     </div>
   
 
