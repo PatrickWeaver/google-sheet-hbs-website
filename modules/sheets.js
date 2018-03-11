@@ -6,7 +6,7 @@ var GoogleSpreadsheet = require('google-spreadsheet');
 function linkOrImage(url) {
   var imageExts = ["gif", "jpg", "jpeg", "png", "bmp", "svg"];
   var ext = url.split(".").pop().split("?")[0];
-  if (imageExts.indexOf(ext) >= 0) {
+  if (imageExts.indexOf(ext.toLowerCase()) >= 0) {
     return {
       image: true,
       hyperlink: false,
