@@ -27,8 +27,6 @@ const SPREADSHEET_KEY             = "18maXAoXx2j32CcCXEpAPrDveQkrKibBEs22JwwGrFY
 
 const DEFAULT_TAB                 = 0; // Could also use the name of a tab like "Trees", or null for no default and just links
 
-const SITE_TITLE                  = "Plants"
-
 const INCLUDE_TIMESTAMP           = false;
 
 // This won't show up in the JSON API but there needs to be a value (even an empty string).
@@ -48,7 +46,7 @@ sheets.INCLUDE_TIMESTAMP = INCLUDE_TIMESTAMP;
 
 var templateData = {
   favicon: FAVICON_URL,
-  title: SITE_TITLE
+  title: ""
 }
 
 
