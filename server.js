@@ -27,8 +27,6 @@ const SPREADSHEET_KEY             = "1C7Ojs1i8duxWBmBYPtMTDVLRF7mu-WMTEjKi1-xCuE
 
 const DEFAULT_TAB                 = 0; // Could also use the name of a tab like "Trees", or null for no default and just links
 
-const API_URL                     = "https://google-sheet-json-api.glitch.me/";
-
 const SITE_TITLE                  = "Plants"
 
 // This won't show up in the JSON API but there needs to be a value (even an empty string).
@@ -43,7 +41,6 @@ const FAVICON_URL                 = "https://cdn.glitch.com/627f5674-c2e5-4334-a
 
 var sheets = require('./modules/sheets');
 sheets.SPREADSHEET_KEY = SPREADSHEET_KEY;
-sheets.API_URL = API_URL;
 
 
 var templateData = {

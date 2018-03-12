@@ -64,7 +64,7 @@ function getSheet(worksheet) {
   });
 };
 
-function getInfo(SPREADSHEET_KEY, API_URL) {
+function getInfo(SPREADSHEET_KEY) {
   var doc = new GoogleSpreadsheet(SPREADSHEET_KEY);
   return new Promise(function(resolve, reject) {
     doc.getInfo(function(err, sheetData) {
@@ -72,11 +72,6 @@ function getInfo(SPREADSHEET_KEY, API_URL) {
         console.log(err);
         reject({error: err});
       } else {
-        if (sheetData.worksheets) {
-          for (var i in sheetData.worksheets) {
-             sheetData.worksheets[i].apiURL = API_URL + sheetData.worksheets[i].title;
-          }
-        }
         resolve(sheetData);
       }
     });
@@ -90,7 +85,7 @@ function getData(tab) {
     var worksheet;
     var index = -1;
     var title = "";
-    getInfo(this.SPREADSHEET_KEY, this.API_URL)
+    getInfo(this.SPREADSHEET_KEY)
     .then(function(info) {
       data = info;
       if (tab === null) {
