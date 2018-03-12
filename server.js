@@ -65,7 +65,8 @@ app.get("/:tab", function(req, res, next) {
 app.use(function(req, res, next) {
   sheets.getData(res.locals.tab)
   .then(function(data){
-        templateData.data = data;
+    templateData.title = data.title;
+    templateData.data = data;
     res.render("index", templateData);
     return;
   })
