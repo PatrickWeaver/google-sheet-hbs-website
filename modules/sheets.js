@@ -64,7 +64,7 @@ function getSheet(worksheet) {
   });
 };
 
-function getInfo(SPREADSHEET_KEY, API_URL) {
+function getInfo(SPREADSHEET_KEY) {
   var doc = new GoogleSpreadsheet(SPREADSHEET_KEY);
   return new Promise(function(resolve, reject) {
     doc.getInfo(function(err, sheetData) {
@@ -72,11 +72,6 @@ function getInfo(SPREADSHEET_KEY, API_URL) {
         console.log(err);
         reject({error: err});
       } else {
-        if (sheetData.worksheets) {
-          for (var i in sheetData.worksheets) {
-             sheetData.worksheets[i].apiURL = API_URL + sheetData.worksheets[i].title;
-          }
-        }
         resolve(sheetData);
       }
     });
@@ -90,7 +85,7 @@ function getData(tab) {
     var worksheet;
     var index = -1;
     var title = "";
-    getInfo(this.SPREADSHEET_KEY, this.API_URL)
+    getInfo(this.SPREADSHEET_KEY)
     .then(function(info) {
       data = info;
       if (tab === null) {
@@ -113,6 +108,11 @@ function getData(tab) {
         data.worksheets[index].current = true;
         data.currentWorksheet = data.worksheets[index].title;
         rows = newData;
+        if (data.worksheets.length === 1) {
+          data.worksheets[index].only = true; 
+        } else {
+          data.worksheets[index].only = false; 
+        }
       }
       return getHeaders(worksheet, Object.keys(rows[0]).length);
     })
@@ -124,11 +124,13 @@ function getData(tab) {
         for (var j in headers) {
           var header = headers[j]._value;
           var prop = header.replace(/[^a-zA-Z0-9.-]/g, '').toLowerCase();
-          if (row[prop] && typeof row[prop] === "string" && row[prop].substring(0, 4) === "http") {
-            row[prop] = linkOrImage(row[prop]); 
-          }
-          if (row[prop]) {
-            newRow[header] = row[prop];
+          if (!this.INCLUDE_TIMESTAMP && prop != "timestamp"){
+            if (row[prop] && typeof row[prop] === "string" && row[prop].substring(0, 4) === "http") {
+              row[prop] = linkOrImage(row[prop]); 
+            }
+            if (row[prop]) {
+              newRow[header] = row[prop];
+            }
           }
         }
         data.rows.push(newRow);
