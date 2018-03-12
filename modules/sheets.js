@@ -88,6 +88,18 @@ function getData(tab) {
     getInfo(this.SPREADSHEET_KEY)
     .then(function(info) {
       data = info;
+      var worksheets = [];
+      var staticData = {};
+      for (var i in data.worksheets) {
+        if (data.worksheets[i].title != "STATIC") {
+          worksheets.push(data.worksheets[i]); 
+        } else {
+          staticData = data.worksheets[i];
+        }
+      }                 
+      data.worksheets = worksheets;
+      data.staticData = staticData;
+      
       if (tab === null) {
         return {}; 
       }  
