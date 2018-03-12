@@ -1,7 +1,11 @@
 <div id="content">
   <h2>
-    {{ data.currentWorksheet }}
+    {{ data.currentWorksheet.title }}
   </h2>
+  
+  <div id="static-html">
+    {{{ data.currentWorksheet.staticHTML }}}
+  </div>
   
   {{#each data.rows }}
     <div class="plant">
