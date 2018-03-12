@@ -108,6 +108,11 @@ function getData(tab) {
         data.worksheets[index].current = true;
         data.currentWorksheet = data.worksheets[index].title;
         rows = newData;
+        if (data.worksheets.length === 1) {
+          data.worksheets[index].only = true; 
+        } else {
+          data.worksheets[index].only = false; 
+        }
       }
       return getHeaders(worksheet, Object.keys(rows[0]).length);
     })
@@ -119,11 +124,13 @@ function getData(tab) {
         for (var j in headers) {
           var header = headers[j]._value;
           var prop = header.replace(/[^a-zA-Z0-9.-]/g, '').toLowerCase();
-          if (row[prop] && typeof row[prop] === "string" && row[prop].substring(0, 4) === "http") {
-            row[prop] = linkOrImage(row[prop]); 
-          }
-          if (row[prop]) {
-            newRow[header] = row[prop];
+          if (!this.INCLUDE_TIMESTAMP && prop != "timestamp"){
+            if (row[prop] && typeof row[prop] === "string" && row[prop].substring(0, 4) === "http") {
+              row[prop] = linkOrImage(row[prop]); 
+            }
+            if (row[prop]) {
+              newRow[header] = row[prop];
+            }
           }
         }
         data.rows.push(newRow);

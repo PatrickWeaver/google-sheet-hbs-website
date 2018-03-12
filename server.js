@@ -23,11 +23,13 @@ app.set("views", "views");
 // spreadsheet key is the long id in the sheets URL (after "/d/").
 // https://docs.google.com/spreadsheets/d/1C7Ojs1i8duxWBmBYPtMTDVLRF7mu-WMTEjKi1-xCuE8/edit#gid=707399917
 //                                        ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  
-const SPREADSHEET_KEY             = "1C7Ojs1i8duxWBmBYPtMTDVLRF7mu-WMTEjKi1-xCuE8";
+const SPREADSHEET_KEY             = "18maXAoXx2j32CcCXEpAPrDveQkrKibBEs22JwwGrFYs";
 
 const DEFAULT_TAB                 = 0; // Could also use the name of a tab like "Trees", or null for no default and just links
 
 const SITE_TITLE                  = "Plants"
+
+const INCLUDE_TIMESTAMP           = false;
 
 // This won't show up in the JSON API but there needs to be a value (even an empty string).
 const FAVICON_URL                 = "https://cdn.glitch.com/627f5674-c2e5-4334-a3d6-31e28e3fbdde%2Ffile-cabinet-2-favicon.ico?1520045396371";
@@ -41,6 +43,7 @@ const FAVICON_URL                 = "https://cdn.glitch.com/627f5674-c2e5-4334-a
 
 var sheets = require('./modules/sheets');
 sheets.SPREADSHEET_KEY = SPREADSHEET_KEY;
+sheets.INCLUDE_TIMESTAMP = INCLUDE_TIMESTAMP;
 
 
 var templateData = {
