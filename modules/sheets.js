@@ -36,7 +36,8 @@ function findSheetIndex (title, info) {
   return index; 
 }
 
-function getHeaders(worksheet, cols) {
+function getHeaders(worksheet) {
+  var cols = worksheet.colCount;
   return new Promise(function(resolve, reject) {
     worksheet.getCells({
       "min-row": 1,
@@ -48,6 +49,7 @@ function getHeaders(worksheet, cols) {
       if (err) {
         reject(err);
       }
+      headers = headers.filter(header => header._value != "");
       resolve(headers);
     });
   });
@@ -85,6 +87,11 @@ function getData(tab) {
     var worksheet;
     var index = -1;
     var title = "";
+    
+    var headers;
+    var sheetData;
+    var staticData;
+    
     getInfo(this.SPREADSHEET_KEY)
     .then(function(info) {
       data = info;
@@ -113,73 +120,88 @@ function getData(tab) {
         throw({error: "Worksheet not found"});
       }
       worksheet = info.worksheets[index]
-      return getSheet(worksheet);
+      sheetData = getSheet(worksheet);
+      return
     })
-    .then(function(newData) {
-      if (index > -1) {
-        var title = data.title;
-        if (title.length >= 11) {
-          var endIndex = title.length;
-          var startIndex = endIndex - 11;
-          if(title.substr(startIndex, endIndex) === "(Responses)") {
-            data.title = data.title.substr(0, startIndex); 
-          };
-        }
-        data.worksheets[index].current = true;
-        data.currentWorksheet = {};
-        var currentTitle = data.worksheets[index].title;
-        if (
-          currentTitle.substr(0, 14) != "Form Responses"
-          &&
-          currentTitle.substr(0, 22) != "Copy of Form Responses"
-        ) {
-          data.currentWorksheet.title = data.worksheets[index].title;
-        } else {
-          data.currentWorksheet.title = "";
-        }
-        rows = newData;
-        if (data.worksheets.length === 1) {
-          data.worksheets[index].only = true; 
-        } else {
-          data.worksheets[index].only = false; 
-        }
+    .then(function() {
+      headers = getHeaders(worksheet);
+      return
+    })
+    .then(function() {
+      if (data.staticWorksheet) {
+        staticData = getSheet(data.staticWorksheet);
+        return
+      } else {
+        staticData = false;
+        return
       }
-      return getHeaders(worksheet, Object.keys(rows[0]).length);
     })
-    .then(function(headers) {
-      data.rows = [];
-      for (var i in rows) {
-        var newRow = {};
-        var row = rows[i]
-        for (var j in headers) {
-          var header = headers[j]._value;
-          var prop = header.replace(/[^a-zA-Z0-9.-]/g, '').toLowerCase();
-          if (!this.INCLUDE_TIMESTAMP && prop != "timestamp"){
-            if (row[prop] && typeof row[prop] === "string" && row[prop].substring(0, 4) === "http") {
-              row[prop] = linkOrImage(row[prop]); 
-            }
-            if (row[prop]) {
-              newRow[header] = row[prop];
-            }
+    .then(function() {
+      Promise.all([sheetData, headers, staticData])
+      .then(function(values) {
+        sheetData = values[0];
+        headers = values[1];
+        staticData = values[2];
+        if (index > -1) {
+          var title = data.title;
+          if (title.length >= 11) {
+            var endIndex = title.length;
+            var startIndex = endIndex - 11;
+            if(title.substr(startIndex, endIndex) === "(Responses)") {
+              data.title = data.title.substr(0, startIndex); 
+            };
+          }
+          data.worksheets[index].current = true;
+          data.currentWorksheet = {};
+          var currentTitle = data.worksheets[index].title;
+          if (
+            currentTitle.substr(0, 14) != "Form Responses"
+            &&
+            currentTitle.substr(0, 22) != "Copy of Form Responses"
+          ) {
+            data.currentWorksheet.title = data.worksheets[index].title;
+          } else {
+            data.currentWorksheet.title = "";
+          }
+          rows = sheetData;
+          if (data.worksheets.length === 1) {
+            data.worksheets[index].only = true; 
+          } else {
+            data.worksheets[index].only = false; 
           }
         }
-        data.rows.push(newRow);
-      }
-      if (data.staticWorksheet) {
-        return getSheet(data.staticWorksheet);
-      } else {
-        return {}
-      }
-    })
-    .then(function(staticData) {
-      for (var i in staticData[0]) {
-        if (i === data.currentWorksheet.title.replace(/[^a-zA-Z0-9.-]/g, '').toLowerCase()) {
-          data.currentWorksheet.staticHTML = staticData[0][i];
+        
+        // headers -> headers
+        data.rows = [];
+        for (var i in rows) {
+          var newRow = {};
+          var row = rows[i]
+          for (var j in headers) {
+            var header = headers[j]._value;
+            var prop = header.replace(/[^a-zA-Z0-9.-]/g, '').toLowerCase();
+            if (!this.INCLUDE_TIMESTAMP && prop != "timestamp"){
+              if (row[prop] && typeof row[prop] === "string" && row[prop].substring(0, 4) === "http") {
+                row[prop] = linkOrImage(row[prop]); 
+              }
+              if (row[prop]) {
+                newRow[header] = row[prop];
+              }
+            }
+          }
+          data.rows.push(newRow);
         }
-      }
-      resolve(data);
+        
+        // staticData -> staticData
+        for (var i in staticData[0]) {
+          if (i === data.currentWorksheet.title.replace(/[^a-zA-Z0-9.-]/g, '').toLowerCase()) {
+            data.currentWorksheet.staticHTML = staticData[0][i];
+          }
+        }
+        resolve(data);
+      })
     })
     .catch(function(err) {
+      console.log("Catch");
       console.log("ERROR: " + err.error);
       reject(err.error);
     });
